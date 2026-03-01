@@ -74,7 +74,7 @@ export async function PATCH(
     const db = await getUserDb(decoded.dbName);
     const galleryCollection = db.collection('gallery');
 
-    const updateData: any = {};
+    const updateData: Partial<{ fileName: string; folder: string }> = {};
     if (fileName) updateData.fileName = fileName;
     if (folder) updateData.folder = folder;
 

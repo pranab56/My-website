@@ -13,6 +13,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false }) as any;
 
 interface GalleryLightboxProps {

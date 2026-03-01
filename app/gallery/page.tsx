@@ -67,7 +67,7 @@ export default function GalleryPage() {
       setYtName('');
       setIsAddingYt(false);
       await refetch();
-    } catch (err) {
+    } catch (_err) {
       showMessage('Failed to log transmission.', 'error');
     } finally {
       setIsSubmittingYt(false);
@@ -174,7 +174,7 @@ export default function GalleryPage() {
       showMessage('Registry updated.', 'success');
       setRenamingItem(null);
       setNewName('');
-    } catch (err) {
+    } catch (_err) {
       showMessage('Update failed.', 'error');
     }
   };

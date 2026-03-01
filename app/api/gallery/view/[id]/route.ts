@@ -68,7 +68,7 @@ export async function GET(
             if (controller.desiredSize !== null) {
               controller.enqueue(chunk);
             }
-          } catch (e) {
+          } catch (_e) {
             // Client likely disconnected
             stream.destroy();
           }
@@ -77,7 +77,7 @@ export async function GET(
         stream.on('end', () => {
           try {
             controller.close();
-          } catch (e) {
+          } catch (_e) {
             // Ignore if already closed
           }
         });
@@ -85,7 +85,7 @@ export async function GET(
         stream.on('error', (err) => {
           try {
             controller.error(err);
-          } catch (e) {
+          } catch (_e) {
             // Ignore if already closed
           }
         });

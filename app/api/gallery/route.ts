@@ -79,11 +79,23 @@ export async function POST(request: NextRequest) {
 
     const bucket = new GridFSBucket(db, { bucketName: 'gallery_files' });
 
+    interface UploadResult {
+      fileId: ObjectId;
+      fileName: string;
+      mimeType: string;
+      size: number;
+      folder?: string;
+    }
+
+    interface ExtendedBusboy extends Busboy.Busboy {
+      _allFinished?: boolean;
+    }
+
     // Use a promise to handle the multipart streaming
-    const uploadResult = await new Promise<{ fileId: ObjectId; fileName: string; mimeType: string; size: number; folder?: string }>((resolve, reject) => {
-      const busboy = Busboy({ headers: { 'content-type': request.headers.get('content-type') || '' } });
+    const uploadResult = await new Promise<UploadResult>((resolve, reject) => {
+      const busboy = Busboy({ headers: { 'content-type': request.headers.get('content-type') || '' } }) as ExtendedBusboy;
       let uploadsInProgress = 0;
-      let lastFileResult: any = null;
+      let lastFileResult: UploadResult | null = null;
       let folder: string | undefined;
 
       busboy.on('field', (name, val) => {
@@ -114,14 +126,14 @@ export async function POST(request: NextRequest) {
         uploadStream.on('finish', () => {
           lastFileResult = { fileId: uploadStream.id, fileName: currentFileName, mimeType: currentMimeType, size: currentFileSize, folder };
           uploadsInProgress--;
-          if (uploadsInProgress === 0 && (busboy as any)._allFinished) {
+          if (uploadsInProgress === 0 && busboy._allFinished) {
             resolve(lastFileResult);
           }
         });
       });
 
       busboy.on('finish', () => {
-        (busboy as any)._allFinished = true;
+        busboy._allFinished = true;
         if (uploadsInProgress === 0 && lastFileResult) {
           resolve(lastFileResult);
         } else if (uploadsInProgress === 0 && !lastFileResult) {
@@ -135,7 +147,11 @@ export async function POST(request: NextRequest) {
       });
 
       // Convert Web Stream to Node Stream and pipe to Busboy
-      const nodeStream = Readable.fromWeb(request.body as any);
+      if (!request.body) {
+        reject(new Error('No request body'));
+        return;
+      }
+      const nodeStream = Readable.fromWeb(request.body as import('stream/web').ReadableStream<Uint8Array>);
       nodeStream.pipe(busboy);
     });
 

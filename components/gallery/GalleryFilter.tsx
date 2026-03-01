@@ -38,7 +38,7 @@ export default function GalleryFilter({
         ].map((cat) => (
           <button
             key={cat.id}
-            onClick={() => onFilterChange(cat.id as any)}
+            onClick={() => onFilterChange(cat.id as 'all' | 'image' | 'video' | 'youtube')}
             className={cn(
               "flex items-center justify-center flex-1 md:flex-none px-4 md:px-6 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer",
               filter === cat.id

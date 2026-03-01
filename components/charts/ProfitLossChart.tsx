@@ -13,7 +13,6 @@ import {
 
 const PROFIT_COLOR = "#4CAF50";
 const LOSS_COLOR = "#F44336";
-const NEUTRAL_COLOR = "#888888";
 const CARD_BG_LIGHT = "#FFFFFF";
 const CARD_BG_DARK = "#1E1E1E";
 
@@ -37,7 +36,6 @@ export default function ProfitLossChart({ data }: ProfitLossChartProps) {
 
   const totalPnL = data.reduce((acc, item) => acc + (item.net || 0), 0);
   const isPositive = totalPnL >= 0;
-  const isNegative = totalPnL < 0;
 
   const chartColor = isPositive ? PROFIT_COLOR : LOSS_COLOR;
   const cardBg = isDark ? CARD_BG_DARK : CARD_BG_LIGHT;
