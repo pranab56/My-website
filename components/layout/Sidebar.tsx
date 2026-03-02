@@ -51,7 +51,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   return (
     <aside className={`
-      fixed inset-y-0 left-0 w-72 bg-card/70 backdrop-blur-2xl border-r border-border h-screen z-[999] flex flex-col transition-transform duration-300 md:translate-x-0 md:static md:w-64
+      fixed inset-y-0 left-0 w-72 bg-card/70 backdrop-blur-2xl border-r border-border h-screen z-40 flex flex-col transition-transform duration-300 md:translate-x-0 md:static md:w-64
       ${isOpen ? 'translate-x-0' : '-translate-x-full'}
     `}>
       <div className="p-6 md:p-8 flex items-center justify-between">

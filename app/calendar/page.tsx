@@ -32,6 +32,13 @@ import {
 import { memo, useMemo, useState } from 'react';
 import Loading from '../../components/Loading/Loading';
 
+const getLocalDate = (isoDateString: string) => {
+  if (!isoDateString) return new Date();
+  const datePart = isoDateString.split('T')[0];
+  const [year, month, day] = datePart.split('-');
+  return new Date(Number(year), Number(month) - 1, Number(day));
+};
+
 // --- Types ---
 interface DailySummary {
   date: string;
@@ -154,7 +161,7 @@ const DayButton = memo(({
           )}
         </button>
       </PopoverTrigger>
-      <PopoverContent side="bottom" align="center" className="p-0 border-none bg-transparent shadow-none w-[calc(100vw-32px)] sm:w-80 z-50">
+      <PopoverContent side="bottom" align="center" className="p-0 border-none bg-transparent shadow-none w-[calc(100vw-32px)] sm:w-80 z-[100]">
         <div className="bg-card border border-border shadow-2xl rounded-3xl overflow-hidden backdrop-blur-xl animate-in fade-in slide-in-from-left-4 duration-300">
           <div className={cn(
             "p-6 flex flex-col",
@@ -231,7 +238,7 @@ export default function TradingCalendarPage() {
     const map: Record<string, DailySummary> = {};
     if (Array.isArray(trades)) {
       trades.forEach((trade: { date: string; profit: string; loss: string; notes?: string }) => {
-        const dateKey = format(parseISO(trade.date), "yyyy-MM-dd");
+        const dateKey = format(getLocalDate(trade.date), "yyyy-MM-dd");
         if (!map[dateKey]) {
           map[dateKey] = {
             date: dateKey,

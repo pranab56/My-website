@@ -38,12 +38,17 @@ export async function GET(request: Request) {
     const decoded = verifyToken(token) as TokenPayload | null;
     if (!decoded || !decoded.dbName) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
+    const db = await getUserDb(decoded.dbName);
+
     const mainDb = await getDb('tradelog_main');
     const user = await mainDb.collection('users').findOne({ email: decoded.email });
     const initialCapital = user?.initialCapital || 0;
-    const capitalUpdateDate = user?.capitalUpdateDate ? new Date(user.capitalUpdateDate) : new Date(0);
 
-    const db = await getUserDb(decoded.dbName);
+    // Normalize reset date to start of UTC day to include same-day trades
+    const rawResetDate = user?.capitalUpdateDate || user?.createdAt || 0;
+    const capitalUpdateDate = new Date(rawResetDate);
+    capitalUpdateDate.setUTCHours(0, 0, 0, 0);
+
     const rawRecords = await db.collection('trades').find({}).sort({ date: 1 }).toArray();
 
     // Use current server date if client doesn't provide one

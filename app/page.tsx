@@ -122,7 +122,7 @@ export default function OverviewPage() {
                 title="Current Capital"
                 value={`$${(data?.currentCapital || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
                 icon={Wallet}
-                color="primary"
+                color={(data?.currentCapital || 0) >= (data?.initialCapital || 0) ? 'profit' : 'loss'}
               />
               <KPICard
                 title="Total Net PnL"
