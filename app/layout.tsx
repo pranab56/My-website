@@ -1,3 +1,4 @@
+import { SidebarProvider } from "@/components/providers/SidebarProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import StoreProvider from "@/providers/StoreProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
@@ -33,10 +34,12 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <TooltipProvider>
-            <StoreProvider>
-              {children}
-              <Toaster richColors position="top-right" />
-            </StoreProvider>
+            <SidebarProvider>
+              <StoreProvider>
+                {children}
+                <Toaster richColors position="top-right" />
+              </StoreProvider>
+            </SidebarProvider>
           </TooltipProvider>
         </ThemeProvider>
       </body>

@@ -1,7 +1,9 @@
 "use client";
 
+import { useSidebar } from "@/components/providers/SidebarProvider";
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useLogoutMutation } from '@/features/auth/authApi';
+import { cn } from '@/lib/utils';
 import {
   BarChart3,
   Calendar,
@@ -16,6 +18,7 @@ import {
   LogOut,
   Settings,
   TrendingUp,
+  Users,
   X
 } from 'lucide-react';
 import Link from 'next/link';
@@ -29,19 +32,19 @@ const navItems = [
   { name: 'Todos', href: '/todos', icon: CheckSquare },
   { name: 'Gallery', href: '/gallery', icon: Image },
   { name: 'Reports', href: '/reports', icon: FileText },
+  { name: 'User Management', href: '/user-management', icon: Users },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  isCollapsed: boolean;
-  setIsCollapsed: (collapsed: boolean) => void;
 }
 
-export default function Sidebar({ isOpen, onClose, isCollapsed, setIsCollapsed }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { isCollapsed, setIsCollapsed, hasMounted } = useSidebar();
   const [logout, { isLoading }] = useLogoutMutation();
 
   const handleLogout = async () => {
@@ -53,28 +56,37 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, setIsCollapsed }
     }
   };
 
+  const toggleCollapse = () => { // New toggleCollapse function
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
-    <aside className={`
-      fixed inset-y-0 left-0 bg-card/40 backdrop-blur-2xl border-r border-border/40 h-screen z-40 flex flex-col transition-all duration-300 md:translate-x-0 md:static
-      ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-      ${isCollapsed ? 'w-20' : 'w-72 md:w-64'}
-    `}>
-      <div className={`p-4 md:p-6 flex items-center justify-between ${isCollapsed ? 'flex-col gap-4' : ''}`}>
-        <div className="flex items-center space-x-3">
+    <aside className={cn(
+      "fixed inset-y-0 left-0 bg-card/40 backdrop-blur-2xl border-r border-border/40 h-screen z-40 flex flex-col transition-all duration-300 md:translate-x-0 md:static overflow-hidden",
+      isOpen ? "translate-x-0" : "-translate-x-full",
+      isCollapsed ? "w-20" : "w-72 md:w-64",
+      !hasMounted && "transition-none" // Added transition-none
+    )}>
+      <div className={cn(
+        "p-4 md:p-6 flex items-center justify-between",
+        isCollapsed ? "flex-col gap-4 px-2" : ""
+      )}>
+        <div className="flex items-center space-x-3 overflow-hidden">
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
             <TrendingUp className="text-primary-foreground w-6 h-6" />
           </div>
-          {!isCollapsed && <h1 className="text-xl font-bold tracking-tight">TradeLog</h1>}
+          {!isCollapsed && <h1 className="text-xl font-bold tracking-tight truncate">TradeLog</h1>}
         </div>
 
         <div className="flex items-center gap-1">
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
+          <button // Updated collapse button
+            onClick={toggleCollapse}
             className="hidden md:flex p-2 rounded-lg hover:bg-accent text-muted-foreground transition-colors cursor-pointer"
+            title={isCollapsed ? "Expand" : "Collapse"}
           >
             {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
           </button>
-          <button
+          <button // Mobile close button
             onClick={onClose}
             className="md:hidden p-2 rounded-lg hover:bg-accent text-muted-foreground transition-colors cursor-pointer"
           >
