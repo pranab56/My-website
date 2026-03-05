@@ -155,8 +155,12 @@ export async function POST(request: NextRequest) {
       nodeStream.pipe(busboy);
     });
 
+    const itemId = new ObjectId();
+    const dataUrl = `/api/gallery/view/${itemId.toString()}`;
     const isVideo = uploadResult.mimeType.startsWith('video/');
+
     const galleryItem = {
+      _id: itemId,
       fileId: uploadResult.fileId,
       type: isVideo ? 'video' : 'image',
       fileName: uploadResult.fileName,
@@ -164,16 +168,15 @@ export async function POST(request: NextRequest) {
       size: uploadResult.size,
       folder: uploadResult.folder || 'Root',
       userId: decoded.id,
-      createdAt: new Date()
+      createdAt: new Date(),
+      data: dataUrl // Saving the direct URL in the DB as requested
     };
 
-    const result = await db.collection('gallery').insertOne(galleryItem);
-    const itemId = result.insertedId.toString();
+    await db.collection('gallery').insertOne(galleryItem);
 
     return NextResponse.json({
       ...galleryItem,
-      _id: itemId,
-      data: `/api/gallery/view/${itemId}` // This URL will stream the file
+      _id: itemId.toString()
     }, { status: 201 });
 
   } catch (err: unknown) {

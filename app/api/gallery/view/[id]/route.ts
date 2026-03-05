@@ -55,12 +55,69 @@ export async function GET(
     }
 
     const file = files[0];
+    const fileSize = file.length;
+    const contentType = file.metadata?.contentType || 'application/octet-stream';
 
-    // 3. Create a stream from GridFS
+    // 3. Handle Range Requests (Very important for video seeking and performance)
+    const rangeHeader = request.headers.get('range');
+
+    if (rangeHeader) {
+      const parts = rangeHeader.replace(/bytes=/, "").split("-");
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+
+      if (start >= fileSize) {
+        return new NextResponse('Requested range not satisfiable', {
+          status: 416,
+          headers: { 'Content-Range': `bytes */${fileSize}` }
+        });
+      }
+
+      const chunksize = (end - start) + 1;
+      const downloadStream = bucket.openDownloadStream(fileId, {
+        start,
+        end: end + 1 // GridFS end is exclusive
+      });
+
+      const webStream = new ReadableStream({
+        start(controller) {
+          downloadStream.on('data', (chunk) => {
+            try {
+              if (controller.desiredSize !== null) {
+                controller.enqueue(chunk);
+              }
+            } catch (_e) {
+              downloadStream.destroy();
+            }
+          });
+
+          downloadStream.on('end', () => {
+            try { controller.close(); } catch (_e) { }
+          });
+
+          downloadStream.on('error', (err) => {
+            try { controller.error(err); } catch (_e) { }
+          });
+        },
+        cancel() {
+          downloadStream.destroy();
+        }
+      });
+
+      return new NextResponse(webStream, {
+        status: 206,
+        headers: {
+          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': chunksize.toString(),
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+      });
+    }
+
+    // 4. Default stream for full file
     const stream = bucket.openDownloadStream(fileId);
-
-    // 4. Return as a Next.js Response (streaming)
-    // Using a custom ReadableStream to perfectly handle client disconnects and prevent "Controller is already closed" errors.
     const webStream = new ReadableStream({
       start(controller) {
         stream.on('data', (chunk) => {
@@ -69,25 +126,16 @@ export async function GET(
               controller.enqueue(chunk);
             }
           } catch (_e) {
-            // Client likely disconnected
             stream.destroy();
           }
         });
 
         stream.on('end', () => {
-          try {
-            controller.close();
-          } catch (_e) {
-            // Ignore if already closed
-          }
+          try { controller.close(); } catch (_e) { }
         });
 
         stream.on('error', (err) => {
-          try {
-            controller.error(err);
-          } catch (_e) {
-            // Ignore if already closed
-          }
+          try { controller.error(err); } catch (_e) { }
         });
       },
       cancel() {
@@ -95,12 +143,13 @@ export async function GET(
       }
     });
 
-    console.log(`[GalleryView] Streaming file: ${file.filename} (Type: ${file.metadata?.contentType}, Size: ${file.length})`);
+    console.log(`[GalleryView] Streaming file: ${file.filename} (Type: ${contentType}, Size: ${fileSize})`);
 
     return new NextResponse(webStream, {
       headers: {
-        'Content-Type': file.metadata?.contentType || 'application/octet-stream',
-        'Content-Length': file.length.toString(),
+        'Content-Type': contentType,
+        'Content-Length': fileSize.toString(),
+        'Accept-Ranges': 'bytes',
         'Content-Disposition': `inline; filename="${file.filename}"`,
         'Cache-Control': 'public, max-age=31536000, immutable',
       },

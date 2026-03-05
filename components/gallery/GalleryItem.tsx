@@ -3,8 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { GalleryItem as GalleryItemType } from '@/features/gallery/galleryApi';
 import { cn } from '@/lib/utils';
-import { Check, Download, Edit2, Image as ImageIcon, Play, Trash2, Video as VideoIcon, Youtube } from 'lucide-react';
-import Image from 'next/image';
+import { Check, Download, Edit2, Image as ImageIcon, Loader2, Play, Trash2, Video as VideoIcon, Youtube } from 'lucide-react';
+import { useState } from 'react';
 
 interface GalleryItemProps {
   item: GalleryItemType;
@@ -27,6 +27,21 @@ export default function GalleryItem({
   onDownload,
   formatSize
 }: GalleryItemProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const getYoutubeThumbnail = (url: string) => {
+    try {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      const match = url.match(regExp);
+      const id = (match && match[2].length === 11) ? match[2] : null;
+      return id ? `https://img.youtube.com/vi/${id}/mqdefault.jpg` : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const youtubeThumbnail = item.type === 'youtube' ? getYoutubeThumbnail(item.data) : null;
+
   return (
     <div
       className={cn(
@@ -51,21 +66,34 @@ export default function GalleryItem({
       <div onClick={() => onPreview(item)}>
         {/* Media Component */}
         <div className="aspect-square relative flex items-center justify-center bg-black overflow-hidden">
-          {item.type === 'image' ? (
-            <Image
-              fill
-              unoptimized
-              src={item.data}
+          {!isLoaded && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/20 backdrop-blur-sm">
+              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            </div>
+          )}
+
+          {item.type === 'image' || (item.type === 'youtube' && youtubeThumbnail) ? (
+            <img
+              src={item.type === 'image' ? item.data : youtubeThumbnail!}
               alt={item.fileName}
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
+              onLoad={() => setIsLoaded(true)}
+              loading="lazy"
+              className={cn(
+                "w-full h-full object-cover transition-all duration-700 group-hover:scale-110",
+                isLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
+              )}
             />
           ) : item.type === 'video' ? (
             <div className="w-full h-full relative">
               <video
                 src={item.data}
-                className="w-full h-full object-cover opacity-80"
+                className={cn(
+                  "w-full h-full object-cover transition-opacity duration-500",
+                  isLoaded ? "opacity-80" : "opacity-0"
+                )}
                 muted
                 preload="metadata"
+                onCanPlay={() => setIsLoaded(true)}
               />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="p-4 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/20 opacity-100 group-hover:bg-primary group-hover:scale-110 transition-all">

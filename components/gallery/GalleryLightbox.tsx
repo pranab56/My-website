@@ -8,9 +8,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { GalleryItem } from '@/features/gallery/galleryApi';
-import { Download, Info } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Download, Info, Loader2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,10 +25,13 @@ interface GalleryLightboxProps {
 
 export default function GalleryLightbox({ item, onClose, onDownload, formatSize }: GalleryLightboxProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // Reset loading state when item changes
+    setIsLoading(true);
+  }, [item]);
 
   return (
     <Dialog open={!!item} onOpenChange={(open) => !open && onClose()}>
@@ -41,19 +44,24 @@ export default function GalleryLightbox({ item, onClose, onDownload, formatSize 
           <DialogTitle>{item.fileName}</DialogTitle>
         </DialogHeader>
 
-
-
         {/* Media Preview Area */}
-        <div className="relative flex-1 w-full h-full flex items-center justify-center  p-7  overflow-hidden">
+        <div className="relative flex-1 w-full h-full flex items-center justify-center p-7 overflow-hidden">
+          {isLoading && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300">
+              <Loader2 className="w-12 h-12 text-primary animate-spin" />
+            </div>
+          )}
+
           {item.type === 'image' ? (
             <div className="relative w-full h-full flex items-center justify-center">
-              <Image
-                fill
-                unoptimized
+              <img
                 src={item.data}
                 alt={item.fileName}
-                className="object-contain rounded-xl"
-                priority
+                className={cn(
+                  "max-w-full max-h-full object-contain rounded-xl transition-all duration-500",
+                  isLoading ? "opacity-0 scale-95" : "opacity-100 scale-100"
+                )}
+                onLoad={() => setIsLoading(false)}
               />
             </div>
           ) : item.type === 'video' ? (
@@ -63,7 +71,11 @@ export default function GalleryLightbox({ item, onClose, onDownload, formatSize 
                 controls
                 autoPlay
                 playsInline
-                className="max-w-full max-h-full rounded-xl"
+                onLoadedData={() => setIsLoading(false)}
+                className={cn(
+                  "max-w-full max-h-full rounded-xl transition-opacity duration-500",
+                  isLoading ? "opacity-0" : "opacity-100"
+                )}
               />
             </div>
           ) : (
@@ -75,6 +87,12 @@ export default function GalleryLightbox({ item, onClose, onDownload, formatSize 
                   playing
                   width="100%"
                   height="100%"
+                  onReady={() => setIsLoading(false)}
+                  config={{
+                    youtube: {
+                      playerVars: { showinfo: 1, autoplay: 1 }
+                    }
+                  }}
                   style={{ borderRadius: '0.75rem' }}
                 />
               )}
@@ -113,6 +131,6 @@ export default function GalleryLightbox({ item, onClose, onDownload, formatSize 
           </div>
         </div>
       </DialogContent>
-    </Dialog>
+    </Dialog >
   );
 }

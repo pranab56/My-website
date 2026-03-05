@@ -95,19 +95,14 @@ export default function GalleryPage() {
     const totalFiles = files.length;
     setUploadInfo({ current: 0, total: totalFiles });
 
-    for (let i = 0; i < totalFiles; i++) {
-      const file = files[i];
-      setUploadInfo({ current: i + 1, total: totalFiles });
-      setUploadProgress(0);
-
+    const uploadPromises = Array.from(files).map(async (file, index) => {
       if (file.size > 1024 * 1024 * 1024) {
         showMessage(`File ${file.name} exceeds 1GB limit.`, 'error');
-        continue;
+        return;
       }
 
       const formData = new FormData();
       formData.append('file', file);
-      // If we are in a folder, upload to that folder
       if (currentFolder !== 'all') {
         formData.append('folder', currentFolder);
       }
@@ -115,17 +110,20 @@ export default function GalleryPage() {
       try {
         await axios.post('/api/gallery', formData, {
           onUploadProgress: (progressEvent) => {
-            if (progressEvent.total) {
+            if (progressEvent.total && totalFiles === 1) {
               const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
               setUploadProgress(progress);
             }
           },
         });
+        setUploadInfo(prev => prev ? { ...prev, current: prev.current + 1 } : null);
       } catch (err: unknown) {
         console.error(`Upload failed for ${file.name}:`, err);
         showMessage(`Failed to upload ${file.name}`, 'error');
       }
-    }
+    });
+
+    await Promise.all(uploadPromises);
 
     await refetch();
     showMessage('Upload complete!', 'success');
@@ -179,13 +177,29 @@ export default function GalleryPage() {
     }
   };
 
+  const [customFolders, setCustomFolders] = useState<string[]>([]);
+  const [isAddingFolder, setIsAddingFolder] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
+
+  const handleCreateFolder = () => {
+    if (!newFolderName.trim()) return;
+    if (!customFolders.includes(newFolderName.trim())) {
+      setCustomFolders(prev => [...prev, newFolderName.trim()]);
+    }
+    setCurrentFolder(newFolderName.trim());
+    setNewFolderName('');
+    setIsAddingFolder(false);
+    showMessage(`Sector ${newFolderName.trim()} online.`, 'success');
+  };
+
   const folders = useMemo(() => {
     const set = new Set<string>();
     items.forEach(item => {
       if (item.folder) set.add(item.folder);
     });
+    customFolders.forEach(folder => set.add(folder));
     return Array.from(set);
-  }, [items]);
+  }, [items, customFolders]);
 
   const filteredItems = useMemo(() => {
     return items.filter((item: GalleryItemType) => {
@@ -255,7 +269,12 @@ export default function GalleryPage() {
                 {folder}
               </button>
             ))}
-            <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 shrink-0 cursor-pointer">
+            <Button
+              onClick={() => setIsAddingFolder(true)}
+              variant="ghost"
+              size="icon"
+              className="rounded-xl h-10 w-10 shrink-0 cursor-pointer"
+            >
               <FolderPlus className="w-5 h-5" />
             </Button>
             <Button
@@ -432,6 +451,44 @@ export default function GalleryPage() {
                   className="flex-1 h-12 rounded-2xl bg-loss text-white font-black uppercase text-[10px] tracking-widest shadow-lg shadow-loss/20 cursor-pointer"
                 >
                   {isSubmitingYt ? 'Logging...' : 'Sync Asset'}
+                </Button>
+              </DialogFooter>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <Dialog open={isAddingFolder} onOpenChange={setIsAddingFolder}>
+          <DialogContent className="max-w-md rounded-[2.5rem] bg-card/90 backdrop-blur-2xl border-border/50 p-8 shadow-2xl">
+            <DialogHeader className="mb-6">
+              <DialogTitle className="text-2xl font-black uppercase tracking-tighter italic flex items-center gap-3">
+                <FolderPlus className="w-6 h-6 text-primary" />
+                Initialize New Sector
+              </DialogTitle>
+              <DialogDescription className="text-[10px] font-black uppercase tracking-widest text-primary/60">Allocate Storage Partition</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground block ml-1">Sector Designation (Name)</label>
+                <Input
+                  value={newFolderName}
+                  onChange={(e) => setNewFolderName(e.target.value)}
+                  placeholder="Enter sector name..."
+                  className="h-14 rounded-2xl bg-accent/20 border-border/50 focus:border-primary transition-all font-bold text-sm px-6"
+                />
+              </div>
+              <DialogFooter className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddingFolder(false)}
+                  className="flex-1 h-12 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/50 bg-transparent cursor-pointer"
+                >
+                  Abort
+                </Button>
+                <Button
+                  onClick={handleCreateFolder}
+                  disabled={!newFolderName.trim()}
+                  className="flex-1 h-12 rounded-2xl bg-primary text-white font-black uppercase text-[10px] tracking-widest shadow-lg shadow-primary/20 cursor-pointer"
+                >
+                  Initialize Sector
                 </Button>
               </DialogFooter>
             </div>
