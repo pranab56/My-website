@@ -224,7 +224,7 @@ export default function Trades() {
                   <TableHead className="px-4 md:px-8 py-5 font-semibold text-foreground h-auto text-sm md:text-base">Temporal Key</TableHead>
                   <TableHead className="px-4 md:px-6 py-5 font-semibold text-foreground text-right h-auto text-sm md:text-base">Net Surplus</TableHead>
                   <TableHead className="px-4 md:px-6 py-5 font-semibold text-foreground text-center h-auto text-sm md:text-base">Efficiency (R:R)</TableHead>
-                  <TableHead className="px-4 md:px-6 py-5 font-semibold text-foreground h-auto text-sm md:text-base">Contextual Data</TableHead>
+                  <TableHead className="px-4 md:px-6 py-5 font-semibold text-foreground h-auto text-sm md:text-base min-w-[200px]">Contextual Data</TableHead>
                   <TableHead className="px-4 md:px-6 py-5 font-semibold text-foreground text-right h-auto text-sm md:text-base">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -285,11 +285,11 @@ export default function Trades() {
                           {record.riskRewardRatio}
                         </span>
                       </TableCell>
-                      <TableCell className="px-4 md:px-6 py-4 md:py-6">
-                        <p className="text-xs md:text-sm line-clamp-2 text-foreground font-normal leading-relaxed italic opacity-80">&quot;{record.notes || 'No contextual notes.'}&quot;</p>
+                      <TableCell className="px-4 md:px-6 py-4 md:py-6 min-w-[200px]">
+                        <p className="text-xs md:text-sm max-w-[400px] whitespace-normal break-words text-foreground font-normal leading-relaxed italic opacity-80">&quot;{record.notes || 'No contextual notes.'}&quot;</p>
                         <div className="flex flex-wrap gap-1">
                           {record.tags?.slice(0, 3).map((tag: string) => (
-                            <span key={tag} className="bg-muted/50 text-muted-foreground text-[8px] md:text-[9px] font-black px-2 py-0.5 md:px-2.5 md:py-1 rounded-lg border border-border uppercase tracking-widest whitespace-nowrap">
+                            <span key={tag} className="bg-muted/50 text-muted-foreground text-[8px] mt-2 md:text-[9px] font-black px-2 py-0.5 md:px-2.5 md:py-1 rounded-lg border border-border uppercase tracking-widest whitespace-nowrap">
                               {tag}
                             </span>
                           ))}

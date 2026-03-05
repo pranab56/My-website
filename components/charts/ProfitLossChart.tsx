@@ -66,6 +66,7 @@ export default function ProfitLossChart({ data }: ProfitLossChartProps) {
             tick={{ fill: chartColor, fontSize: 10, opacity: 0.7 }}
           />
           <Tooltip
+            formatter={(value: number | string | undefined) => (Number(value) || 0).toFixed(2)}
             contentStyle={{
               backgroundColor: cardBg,
               borderColor: chartColor,

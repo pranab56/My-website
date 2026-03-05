@@ -73,6 +73,17 @@ export default function TodosPage() {
     }
   }, [updateTodo]);
 
+  const handleUpdateTodo = useCallback(async (id: string, task: string) => {
+    try {
+      setActiveTodoId(id);
+      await updateTodo({ id, task }).unwrap();
+    } catch (err) {
+      console.error('Failed to update todo:', err);
+    } finally {
+      setActiveTodoId(null);
+    }
+  }, [updateTodo]);
+
   const handleDeleteTodo = useCallback(async (id: string) => {
     try {
       setActiveTodoId(id);
@@ -144,9 +155,11 @@ export default function TodosPage() {
                   key={todo._id}
                   todo={todo}
                   onToggle={handleToggleTodo}
+                  onUpdate={handleUpdateTodo}
                   onDelete={handleDeleteTodo}
                   isToggling={isUpdating && activeTodoId === todo._id}
                   isDeleting={isDeleting && activeTodoId === todo._id}
+                  isUpdating={isUpdating && activeTodoId === todo._id}
                 />
               ))
             )}

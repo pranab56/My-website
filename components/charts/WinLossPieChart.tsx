@@ -61,6 +61,7 @@ export default function WinLossPieChart({ wins, losses }: WinLossPieChartProps) 
             ))}
           </Pie>
           <Tooltip
+            formatter={(value: number | string | undefined) => (Number(value) || 0).toFixed(2)}
             contentStyle={{
               backgroundColor: isDark ? CARD_BG_DARK : CARD_BG_LIGHT,
               borderColor: isDark ? BORDER_DARK : BORDER_LIGHT,

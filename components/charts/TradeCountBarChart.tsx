@@ -60,12 +60,12 @@ export default function TradeCountBarChart({ data }: TradeCountBarChartProps) {
             tick={{ fill: chartColor, fontSize: 10, opacity: 0.7 }}
           />
           <Tooltip
+            formatter={(value: number | string | undefined) => (Number(value) || 0).toFixed(2)}
             cursor={{ fill: isDark ? '#ffffff10' : '#00000010' }}
             contentStyle={{
               backgroundColor: cardBg,
               borderColor: chartColor,
               borderRadius: '12px',
-              color: chartColor
             }}
             itemStyle={{ color: chartColor }}
           />

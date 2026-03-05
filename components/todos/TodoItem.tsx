@@ -3,17 +3,30 @@
 import { Button } from '@/components/ui/button';
 import { Todo } from '@/features/todos/todosApi';
 import { cn } from '@/lib/utils';
-import { CheckCircle2, Circle, Loader2, Trash2 } from 'lucide-react';
+import { CheckCircle2, Circle, Edit2, Loader2, Trash2, X } from 'lucide-react';
+import { useState } from 'react';
 
 interface TodoItemProps {
   todo: Todo;
   onToggle: (id: string, completed: boolean) => void;
+  onUpdate: (id: string, task: string) => void;
   onDelete: (id: string) => void;
   isToggling?: boolean;
   isDeleting?: boolean;
+  isUpdating?: boolean;
 }
 
-export default function TodoItem({ todo, onToggle, onDelete, isToggling, isDeleting }: TodoItemProps) {
+export default function TodoItem({ todo, onToggle, onUpdate, onDelete, isToggling, isDeleting, isUpdating }: TodoItemProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(todo.task);
+
+  const handleSave = () => {
+    if (editValue.trim() && editValue !== todo.task) {
+      onUpdate(todo._id, editValue.trim());
+    }
+    setIsEditing(false);
+  };
+
   return (
     <div
       className={cn(
@@ -21,20 +34,20 @@ export default function TodoItem({ todo, onToggle, onDelete, isToggling, isDelet
         todo.completed
           ? "bg-accent/5 border-transparent opacity-60 line-through scale-[0.98]"
           : "bg-card border-border hover:border-primary/30 shadow-sm hover:shadow-xl md:hover:-translate-y-1",
-        (isToggling || isDeleting) && "opacity-50 pointer-events-none"
+        (isToggling || isDeleting || isUpdating) && "opacity-50 pointer-events-none"
       )}
     >
       <div className="p-3 md:p-4 flex items-center justify-between gap-3">
         <div
-          className="flex items-center space-x-3 md:space-x-5 flex-1 cursor-pointer"
-          onClick={() => !todo.completed && !isToggling && onToggle(todo._id, todo.completed)}
+          className="flex items-center space-x-3 md:space-x-5 flex-1"
+          onClick={() => !todo.completed && !isToggling && !isEditing && onToggle(todo._id, todo.completed)}
         >
           <button
             onClick={(e) => {
               e.stopPropagation();
-              if (!isToggling) onToggle(todo._id, todo.completed);
+              if (!isToggling && !isEditing) onToggle(todo._id, todo.completed);
             }}
-            disabled={isToggling}
+            disabled={isToggling || isEditing}
             className={cn(
               "w-8 h-8 md:w-10 md:h-10 rounded-full cursor-pointer flex items-center justify-center transition-all border pointer-events-auto shrink-0",
               todo.completed
@@ -50,16 +63,53 @@ export default function TodoItem({ todo, onToggle, onDelete, isToggling, isDelet
               <Circle className="w-4 h-4 md:w-5 md:h-5 text-transparent" />
             )}
           </button>
-          <span className={cn(
-            "text-base md:text-lg font-medium transition-all truncate max-w-[50vw] sm:max-w-none",
-            !todo.completed ? "text-foreground" : "text-muted-foreground/60"
-          )}>
-            {todo.task}
-          </span>
+
+          <div className="flex-1 w-full min-w-0">
+            {isEditing ? (
+              <input
+                autoFocus
+                className="bg-transparent border-b border-primary/50 outline-none text-base md:text-lg font-medium w-full text-foreground py-1"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSave();
+                  if (e.key === 'Escape') {
+                    setEditValue(todo.task);
+                    setIsEditing(false);
+                  }
+                }}
+                onBlur={handleSave}
+                onClick={(e) => e.stopPropagation()}
+              />
+            ) : (
+              <span className={cn(
+                "text-base md:text-lg font-medium transition-all break-words whitespace-normal block py-1",
+                !todo.completed ? "text-foreground" : "text-muted-foreground/60"
+              )}>
+                {todo.task}
+              </span>
+            )}
+          </div>
         </div>
 
         {!todo.completed ? (
           <div className="flex items-center space-x-2 shrink-0">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (isEditing) {
+                  setEditValue(todo.task);
+                  setIsEditing(false);
+                } else {
+                  setIsEditing(true);
+                }
+              }}
+              className="rounded-xl cursor-pointer h-9 w-9 md:h-10 md:w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all pointer-events-auto border border-border md:border-none"
+            >
+              {isEditing ? <X className="w-4 h-4 md:w-5 md:h-5" /> : <Edit2 className="w-4 h-4 md:w-5 md:h-5" />}
+            </Button>
             <Button
               variant="ghost"
               size="icon"
