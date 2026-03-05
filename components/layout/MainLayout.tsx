@@ -24,7 +24,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div className="flex h-screen bg-background text-foreground selection:bg-primary/20 transition-colors duration-300 overflow-hidden">
+      <div className="flex h-screen bg-background text-foreground selection:bg-primary/20 transition-colors duration-300 overflow-hidden relative">
+        {/* Abstract Background Elements for Glass Effect */}
+        <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[100px]" />
+        </div>
+
         {/* Sidebar Overlay for Mobile */}
         {sidebarOpen && (
           <div

@@ -116,23 +116,25 @@
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  @apply bg-card/60 backdrop-blur-xl border-border/50 shadow-xl;
 }
 
 .dark .glass {
+  @apply bg-card/40 backdrop-blur-xl border-white/5 shadow-2xl;
+}
+
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+.dark .glass-morphism {
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.profit-text {
-  color: var(--profit);
-}
-
-.loss-text {
-  color: var(--loss);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Global Scrollbar Hiding (But keep scrolling functional) */

@@ -55,7 +55,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, setIsCollapsed }
 
   return (
     <aside className={`
-      fixed inset-y-0 left-0 bg-card/70 backdrop-blur-2xl border-r border-border h-screen z-40 flex flex-col transition-all duration-300 md:translate-x-0 md:static
+      fixed inset-y-0 left-0 bg-card/40 backdrop-blur-2xl border-r border-border/40 h-screen z-40 flex flex-col transition-all duration-300 md:translate-x-0 md:static
       ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       ${isCollapsed ? 'w-20' : 'w-72 md:w-64'}
     `}>

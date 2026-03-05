@@ -29,7 +29,7 @@ export default function Header({ onOpenSidebar }: HeaderProps) {
   const profileImage = data?.user?.profileImage;
 
   return (
-    <header className="h-20 border-b border-border bg-card/50 backdrop-blur-xl flex items-center justify-between px-4 md:px-8 sticky top-0 z-50">
+    <header className="h-20 border-b border-border/40 bg-card/40 backdrop-blur-2xl flex items-center justify-between px-4 md:px-8 sticky top-0 z-50">
       <div className="flex items-center space-x-2 md:space-x-4">
         {/* Mobile Menu Toggle */}
         <button
