@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parseISO } from 'date-fns';
 import {
+  ArrowUpDown,
   Calendar as CalendarIcon,
   ChevronDown,
   Info,
@@ -26,6 +27,7 @@ import * as z from 'zod';
 
 const schema = z.object({
   date: z.string().nonempty('Date is required'),
+  type: z.enum(['BUY', 'SELL']),
   profit: z.preprocess((val) => (val === "" ? 0 : Number(val)), z.number().min(0)),
   loss: z.preprocess((val) => (val === "" ? 0 : Number(val)), z.number().min(0)),
   riskRewardRatio: z.string().regex(/^\d+:\d+$/, 'Format must be 1:3'),
@@ -41,13 +43,14 @@ const schema = z.object({
 interface DailyRecordFormProps {
   initialData?: {
     date?: string;
+    type?: 'BUY' | 'SELL';
     profit?: number;
     loss?: number;
     riskRewardRatio?: string;
     notes?: string;
     tags?: string[];
   } | null;
-  onSubmit: (data: { date: string; profit: number; loss: number; riskRewardRatio: string; notes: string; tags: string[] }) => void;
+  onSubmit: (data: { date: string; type: 'BUY' | 'SELL'; profit: number; loss: number; riskRewardRatio: string; notes: string; tags: string[] }) => void;
   isLoading?: boolean;
 }
 
@@ -59,6 +62,7 @@ export default function DailyRecordForm({ initialData, onSubmit, isLoading }: Da
     resolver: zodResolver(schema),
     defaultValues: {
       date: initialData?.date ? initialData.date.split('T')[0] : today,
+      type: initialData?.type || 'BUY',
       profit: initialData?.profit || 0,
       loss: initialData?.loss || 0,
       riskRewardRatio: initialData?.riskRewardRatio || '1:3',
@@ -80,7 +84,7 @@ export default function DailyRecordForm({ initialData, onSubmit, isLoading }: Da
     }
   }, [lossValue, setValue]);
 
-  const handleFormSubmit = (data: { date: string; profit: number; loss: number; riskRewardRatio: string; notes: string; tags: string }) => {
+  const handleFormSubmit = (data: { date: string; type: 'BUY' | 'SELL'; profit: number; loss: number; riskRewardRatio: string; notes: string; tags: string }) => {
     const formattedData = {
       ...data,
       tags: data.tags ? data.tags.split(',').map((t: string) => t.trim()) : []
@@ -132,6 +136,27 @@ export default function DailyRecordForm({ initialData, onSubmit, isLoading }: Da
           </Popover>
           <input type="hidden" {...register('date')} />
           {errors.date && <p className="text-destructive text-sm mt-1">{errors.date.message as string}</p>}
+        </div>
+
+        {/* Trade Type Field */}
+        <div className="space-y-2.5">
+          <label className="text-sm font-semibold flex items-center gap-2">
+            <ArrowUpDown className="w-3.5 h-3.5" /> Direction
+          </label>
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-primary/10 text-primary transition-all">
+              <span className="text-[10px] font-black italic text-primary">+/-</span>
+            </div>
+            <select
+              {...register('type')}
+              className="w-full h-12 pl-14 pr-4 bg-card/60 backdrop-blur-xl border border-border/50 rounded-xl outline-none focus:border-primary/50 transition-all font-black text-lg appearance-none cursor-pointer"
+            >
+              <option value="BUY">BUY Long</option>
+              <option value="SELL">SELL Short</option>
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 opacity-50 pointer-events-none" />
+          </div>
+          {errors.type && <p className="text-destructive text-sm mt-1">{errors.type.message as string}</p>}
         </div>
 
         {/* RR Ratio Field */}

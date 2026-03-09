@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { date, profit, loss, riskRewardRatio, notes, tags } = body;
+    const { date, type, profit, loss, riskRewardRatio, notes, tags } = body;
 
     // Validation
     if (!date || (profit === undefined && loss === undefined) || !riskRewardRatio) {
@@ -67,6 +67,7 @@ export async function POST(request: Request) {
 
     const newTrade = {
       date: new Date(date),
+      type: type === 'SELL' ? 'SELL' : 'BUY',
       profit: parseFloat(profit) || 0,
       loss: parseFloat(loss) || 0,
       riskRewardRatio,

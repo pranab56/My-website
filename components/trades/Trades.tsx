@@ -66,6 +66,7 @@ const getLocalDate = (isoDateString: string) => {
 interface TradeRecord {
   _id: string;
   date: string;
+  type?: 'BUY' | 'SELL';
   profit: number;
   loss: number;
   riskRewardRatio: string;
@@ -260,7 +261,15 @@ export default function Trades() {
                   return (
                     <TableRow key={record._id} className="hover:bg-accent/5 border-border group transition-colors">
                       <TableCell className="px-4 md:px-8">
-                        <div className="font-bold md:font-normal text-xs md:text-sm whitespace-nowrap">{format(getLocalDate(record.date), 'MMM dd, yyyy')}</div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className={cn(
+                            "text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-widest",
+                            record.type === 'SELL' ? "bg-loss/20 text-loss" : "bg-primary/20 text-primary"
+                          )}>
+                            {record.type || 'BUY'}
+                          </span>
+                          <div className="font-bold md:font-normal text-xs md:text-sm whitespace-nowrap">{format(getLocalDate(record.date), 'MMM dd, yyyy')}</div>
+                        </div>
                         <div className="text-[9px] md:text-[10px] text-muted-foreground mt-1 md:mt-1.5 flex items-center gap-2 font-black uppercase tracking-tighter opacity-70">
                           <div className="w-1 h-1 rounded-full bg-primary" />
                           {record.totalTrades > 0 ? `${record.totalTrades} Trade(s)` : 'Single Record'}
@@ -398,6 +407,7 @@ export default function Trades() {
             <DailyRecordForm
               initialData={editingRecord ? {
                 date: editingRecord.date,
+                type: editingRecord.type || 'BUY',
                 profit: editingRecord.profit,
                 loss: editingRecord.loss,
                 riskRewardRatio: editingRecord.riskRewardRatio,
@@ -472,7 +482,7 @@ export default function Trades() {
               </DialogHeader>
 
               <div className="p-4 md:p-6 space-y-6 md:space-y-8 overflow-y-auto max-h-[80vh] custom-scrollbar">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
                   <div className="space-y-1.5 p-4 rounded-xl border border-border bg-accent/10">
                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Net Surplus</p>
                     <p className={cn("text-lg font-black", (viewRecord.profit - viewRecord.loss) >= 0 ? "text-profit" : "text-loss")}>
@@ -485,6 +495,15 @@ export default function Trades() {
                       <Target className="w-4 h-4 text-primary" />
                       <p className="text-lg font-black">{viewRecord.riskRewardRatio}</p>
                     </div>
+                  </div>
+                  <div className="space-y-1.5 p-4 rounded-xl border border-border bg-accent/10">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Direction</p>
+                    <p className={cn(
+                      "text-lg font-black uppercase",
+                      viewRecord.type === 'SELL' ? "text-loss" : "text-primary"
+                    )}>
+                      {viewRecord.type || 'BUY'}
+                    </p>
                   </div>
                   <div className="space-y-1.5 p-4 rounded-xl border border-border bg-accent/10">
                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Execution</p>
