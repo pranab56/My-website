@@ -82,12 +82,12 @@ export default function OverviewPage() {
         </div>
       ) : (
         <div className="space-y-6 md:space-y-8 pb-10">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-            <div className="space-y-1">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 w-full">
+            <div className="space-y-1 w-full md:w-auto">
               <h1 className="text-2xl font-bold tracking-tight">Trading Performance</h1>
-              <p className="text-sm text-muted-foreground max-w-md">Comprehensive analysis of your capital and growth strategies.</p>
+              <p className="text-sm text-muted-foreground max-w-full md:max-w-md">Comprehensive analysis of your capital and growth strategies.</p>
             </div>
-            <div className="flex items-center gap-3 bg-card border border-border px-4 py-2 rounded-2xl">
+            <div className="flex items-center gap-3 bg-card border border-border px-4 py-2 rounded-2xl w-full md:w-auto">
               <Wallet className="w-5 h-5 text-primary" />
               <div className="flex flex-col">
                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider leading-none">Initial Capital</span>
@@ -160,15 +160,15 @@ export default function OverviewPage() {
           {/* Time Period Analysis */}
           <div className="space-y-6">
             <Tabs defaultValue="daily" onValueChange={setActiveTab} className="w-full">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                 <h2 className="text-xl font-bold flex items-center gap-2">
-                  < BarChart3 className="w-5 h-5 text-primary" />
+                  <BarChart3 className="w-5 h-5 text-primary" />
                   Performance
                 </h2>
-                <TabsList className="bg-card border border-border p-1 rounded-xl h-auto flex-wrap sm:flex-nowrap">
-                  <TabsTrigger value="daily" className="flex-1 sm:flex-none rounded-lg py-2 px-3 md:px-4 text-xs md:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer">Daily</TabsTrigger>
-                  <TabsTrigger value="monthly" className="flex-1 sm:flex-none rounded-lg py-2 px-3 md:px-4 text-xs md:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer">Monthly</TabsTrigger>
-                  <TabsTrigger value="yearly" className="flex-1 sm:flex-none rounded-lg py-2 px-3 md:px-4 text-xs md:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer">Yearly</TabsTrigger>
+                <TabsList className="bg-card border border-border p-1 rounded-xl h-auto flex w-full sm:w-auto overflow-x-auto">
+                  <TabsTrigger value="daily" className="flex-1 rounded-lg py-2 px-3 md:px-4 text-xs md:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer">Daily</TabsTrigger>
+                  <TabsTrigger value="monthly" className="flex-1 rounded-lg py-2 px-3 md:px-4 text-xs md:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer">Monthly</TabsTrigger>
+                  <TabsTrigger value="yearly" className="flex-1 rounded-lg py-2 px-3 md:px-4 text-xs md:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground cursor-pointer">Yearly</TabsTrigger>
                 </TabsList>
               </div>
 

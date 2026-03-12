@@ -20,6 +20,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "TradeLog | Daily Trading Dashboard",
   description: "Advanced trading performance tracking and analytics",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "TradeLog",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
@@ -42,6 +51,17 @@ export default function RootLayout({
             </SidebarProvider>
           </TooltipProvider>
         </ThemeProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js');
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );

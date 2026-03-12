@@ -17,9 +17,7 @@ import {
   Loader2,
   LogOut,
   Settings,
-  TrendingUp,
-  Users,
-  X
+  TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -32,7 +30,6 @@ const navItems = [
   { name: 'Todos', href: '/todos', icon: CheckSquare },
   { name: 'Gallery', href: '/gallery', icon: Image },
   { name: 'Reports', href: '/reports', icon: FileText },
-  { name: 'User Management', href: '/user-management', icon: Users },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
@@ -62,14 +59,17 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   return (
     <aside className={cn(
-      "fixed inset-y-0 left-0 bg-card/40 backdrop-blur-2xl border-r border-border/40 h-screen z-40 flex flex-col transition-all duration-300 md:translate-x-0 md:static overflow-hidden",
+      "fixed left-0 bg-card border-r border-border z-[50] flex flex-col transition-all duration-300 md:translate-x-0 md:static overflow-hidden",
+      // Mobile: start below header, desktop: full height
+      "top-20 md:top-0 h-[calc(100vh-80px)] md:h-screen",
       isOpen ? "translate-x-0" : "-translate-x-full",
       isCollapsed ? "w-20" : "w-72 md:w-64",
-      !hasMounted && "transition-none" // Added transition-none
+      !hasMounted && "transition-none"
     )}>
       <div className={cn(
         "p-4 md:p-6 flex items-center justify-between",
-        isCollapsed ? "flex-col gap-4 px-2" : ""
+        isCollapsed ? "flex-col gap-4 px-2" : "",
+        "md:flex-row" // Keep desktop layout
       )}>
         <div className="flex items-center space-x-3 overflow-hidden">
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
@@ -85,12 +85,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             title={isCollapsed ? "Expand" : "Collapse"}
           >
             {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
-          </button>
-          <button // Mobile close button
-            onClick={onClose}
-            className="md:hidden p-2 rounded-lg hover:bg-accent text-muted-foreground transition-colors cursor-pointer"
-          >
-            <X className="w-6 h-6" />
           </button>
         </div>
       </div>

@@ -5,14 +5,15 @@ import { format } from 'date-fns';
 import { Clock, Loader2, Menu, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { TradingCalendar } from './TradingCalendar';
 
 interface HeaderProps {
-  onOpenSidebar: () => void;
+  onToggleSidebar: () => void;
 }
 
-export default function Header({ onOpenSidebar }: HeaderProps) {
+export default function Header({ onToggleSidebar }: HeaderProps) {
   const [time, setTime] = useState(new Date());
   const { data, isLoading } = useGetMeQuery(undefined);
   const { theme, setTheme } = useTheme();
@@ -33,9 +34,9 @@ export default function Header({ onOpenSidebar }: HeaderProps) {
       <div className="flex items-center space-x-2 md:space-x-4">
         {/* Mobile Menu Toggle */}
         <button
-          onClick={onOpenSidebar}
+          onClick={onToggleSidebar}
           className="md:hidden p-2 rounded-xl bg-accent/30 border border-border/50 text-muted-foreground hover:text-primary transition-all cursor-pointer active:scale-95"
-          aria-label="Open Sidebar"
+          aria-label="Toggle Sidebar"
         >
           <Menu className="w-6 h-6" />
         </button>
@@ -66,7 +67,10 @@ export default function Header({ onOpenSidebar }: HeaderProps) {
       </div>
 
       <div className="flex items-center space-x-2 md:space-x-6">
-        <div className="flex items-center space-x-2 md:space-x-3 bg-accent/50 p-1 md:p-1.5 rounded-xl pl-2 md:pl-3">
+        <Link
+          href="/settings"
+          className="flex items-center space-x-2 md:space-x-3 bg-accent/50 p-1 md:p-1.5 rounded-xl pl-2 md:pl-3 hover:bg-accent/70 transition-colors cursor-pointer"
+        >
           <div className="flex flex-col items-end mr-1">
             {isLoading ? (
               <Loader2 className="w-3 h-3 animate-spin text-primary" />
@@ -89,7 +93,7 @@ export default function Header({ onOpenSidebar }: HeaderProps) {
               initial
             )}
           </div>
-        </div>
+        </Link>
       </div>
     </header>
   );

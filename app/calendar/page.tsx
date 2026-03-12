@@ -312,8 +312,8 @@ export default function TradingCalendarPage() {
         ) : (
           <div className="space-y-6 md:space-y-8 pb-10">
             {/* Header Area */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="space-y-1">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 w-full">
+              <div className="space-y-1 w-full md:w-auto">
                 <h1 className="text-xl md:text-2xl font-bold tracking-tight">Trading Progress</h1>
                 <p className="text-sm text-muted-foreground flex items-center font-normal">
                   <CalendarIcon className="w-4 h-4 mr-2 text-primary" />
@@ -321,7 +321,7 @@ export default function TradingCalendarPage() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 md:gap-3 bg-card border border-border p-1.5 md:p-2 rounded-2xl shadow-sm shrink-0">
+              <div className="flex items-center justify-between md:justify-end gap-2 md:gap-3 bg-card border border-border p-1.5 md:p-2 rounded-2xl shadow-sm shrink-0 w-full md:w-auto">
                 <Button
                   variant="outline"
                   size="icon"
@@ -330,7 +330,7 @@ export default function TradingCalendarPage() {
                 >
                   <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
                 </Button>
-                <div className="px-3 md:px-6 py-1.5 md:py-2 bg-primary/5 rounded-xl border border-primary/10">
+                <div className="flex-1 md:flex-none px-3 md:px-6 py-1.5 md:py-2 bg-primary/5 rounded-xl border border-primary/10 text-center">
                   <span className="text-xs md:text-sm font-bold text-primary whitespace-nowrap">
                     {format(currentMonth, "MMMM yyyy")}
                   </span>

@@ -4,7 +4,9 @@ import { useSidebar } from '@/components/providers/SidebarProvider';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import SplashScreen from '../Loading/SplashScreen';
 import Header from './Header';
+import MobileNav from './MobileNav';
 import Sidebar from './Sidebar';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -17,6 +19,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <TooltipProvider delayDuration={300}>
+      <SplashScreen />
       <div
         className={cn(
           "flex h-screen bg-background text-foreground selection:bg-primary/20 overflow-hidden relative w-full",
@@ -33,7 +36,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         {/* Sidebar Overlay for Mobile */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[998] md:hidden transition-opacity duration-300"
+            className="fixed inset-0 top-20 bg-black/60 backdrop-blur-sm z-[40] md:hidden transition-opacity duration-300"
             onClick={() => setSidebarOpen(false)}
           />
         )}
@@ -44,14 +47,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           onClose={() => setSidebarOpen(false)}
         />
 
-        <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden transition-all duration-300 w-full">
-          <Header onOpenSidebar={() => setSidebarOpen(true)} />
-          <main className="flex-1 p-4 overflow-y-auto custom-scrollbar w-full">
-            <div className="w-full px-2 md:px-6">
+        <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden transition-all duration-300 w-full mb-0 md:mb-0">
+          <Header onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+          <main className="flex-1 p-2 md:p-4 overflow-y-auto custom-scrollbar w-full pb-24 md:pb-4">
+            <div className="w-full px-0 md:px-6">
               {children}
             </div>
           </main>
         </div>
+
+        <MobileNav />
       </div>
     </TooltipProvider>
   );
