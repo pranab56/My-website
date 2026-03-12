@@ -60,8 +60,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <aside className={cn(
       "fixed left-0 bg-card border-r border-border z-[50] flex flex-col transition-all duration-300 md:translate-x-0 md:static overflow-hidden",
-      // Mobile: start below header, desktop: full height
-      "top-20 md:top-0 h-[calc(100vh-80px)] md:h-screen",
+      // Mobile: start below header, desktop: full height. Add padding for bottom nav.
+      "top-20 md:top-0 h-[calc(100vh-80px)] md:h-screen pb-20 md:pb-0",
       isOpen ? "translate-x-0" : "-translate-x-full",
       isCollapsed ? "w-20" : "w-72 md:w-64",
       !hasMounted && "transition-none"
