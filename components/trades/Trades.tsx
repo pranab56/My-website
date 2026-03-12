@@ -403,7 +403,7 @@ export default function Trades() {
               Database synchronization in progress.
             </DialogDescription>
           </DialogHeader>
-          <div className="p-4 md:p-6 max-h-[80vh] overflow-y-auto custom-scrollbar">
+          <div className="p-4 md:p-6 max-h-[85vh] overflow-y-auto custom-scrollbar">
             <DailyRecordForm
               initialData={editingRecord ? {
                 date: editingRecord.date,
@@ -428,7 +428,7 @@ export default function Trades() {
       >
         <AlertDialogPortal>
           <AlertDialogOverlay className="backdrop-blur-sm bg-black/40" />
-          <AlertDialogContent className="w-[70%] max-w-sm rounded-2xl p-6 outline-none flex flex-col items-center border-border shadow-2xl">
+          <AlertDialogContent className="w-[90%] sm:max-w-sm rounded-[2rem] p-6 outline-none flex flex-col items-center border-border shadow-2xl bg-card">
 
             <div className="flex flex-col items-center text-center w-full space-y-4">
               {/* ICON */}
@@ -481,7 +481,7 @@ export default function Trades() {
                 </div>
               </DialogHeader>
 
-              <div className="p-4 md:p-6 space-y-6 md:space-y-8 overflow-y-auto max-h-[80vh] custom-scrollbar">
+              <div className="p-4 md:p-6 space-y-6 md:space-y-8 overflow-y-auto max-h-[85vh] custom-scrollbar">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
                   <div className="space-y-1.5 p-4 rounded-xl border border-border bg-accent/10">
                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Net Surplus</p>

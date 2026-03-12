@@ -375,7 +375,7 @@ export default function GalleryPage() {
         )}
 
         <Dialog open={!!renamingItem} onOpenChange={(open) => !open && setRenamingItem(null)}>
-          <DialogContent className="max-w-md rounded-[2.5rem] bg-card/90 backdrop-blur-2xl border-border/50 p-8 shadow-2xl">
+          <DialogContent className="w-[95%] sm:max-w-md rounded-[2.5rem] bg-card/90 backdrop-blur-2xl border-border/50 p-6 md:p-8 shadow-2xl outline-none">
             <DialogHeader className="mb-6">
               <DialogTitle className="text-2xl font-black uppercase tracking-tighter italic">Update Registry</DialogTitle>
               <DialogDescription className="text-[10px] font-black uppercase tracking-widest text-primary/60">Modify Asset Identification</DialogDescription>
@@ -390,17 +390,17 @@ export default function GalleryPage() {
                   className="h-14 rounded-2xl bg-accent/20 border-border/50 focus:border-primary transition-all font-bold text-lg px-6"
                 />
               </div>
-              <DialogFooter className="flex gap-3">
+              <DialogFooter className="flex flex-col sm:flex-row gap-3">
                 <Button
                   variant="outline"
                   onClick={() => setRenamingItem(null)}
-                  className="flex-1 h-12 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/50 bg-transparent cursor-pointer"
+                  className="w-full sm:flex-1 h-12 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/50 bg-transparent cursor-pointer order-2 sm:order-1"
                 >
                   Abort
                 </Button>
                 <Button
                   onClick={handleRename}
-                  className="flex-1 h-12 rounded-2xl bg-primary text-white font-black uppercase text-[10px] tracking-widest shadow-lg shadow-primary/20 cursor-pointer"
+                  className="w-full sm:flex-1 h-12 rounded-2xl bg-primary text-white font-black uppercase text-[10px] tracking-widest shadow-lg shadow-primary/20 cursor-pointer order-1 sm:order-2"
                 >
                   Commit Changes
                 </Button>
@@ -410,7 +410,7 @@ export default function GalleryPage() {
         </Dialog>
 
         <Dialog open={isAddingYt} onOpenChange={setIsAddingYt}>
-          <DialogContent className="max-w-md rounded-[2.5rem] bg-card/90 backdrop-blur-2xl border-border/50 p-8 shadow-2xl">
+          <DialogContent className="w-[95%] sm:max-w-md rounded-[2.5rem] bg-card/90 backdrop-blur-2xl border-border/50 p-6 md:p-8 shadow-2xl outline-none">
             <DialogHeader className="mb-6">
               <DialogTitle className="text-2xl font-black uppercase tracking-tighter italic flex items-center gap-3">
                 <Youtube className="w-6 h-6 text-loss" />
@@ -437,18 +437,18 @@ export default function GalleryPage() {
                   className="h-14 rounded-2xl bg-accent/20 border-border/50 focus:border-primary transition-all font-bold text-sm px-6"
                 />
               </div>
-              <DialogFooter className="flex gap-3">
+              <DialogFooter className="flex flex-col sm:flex-row gap-3">
                 <Button
                   variant="outline"
                   onClick={() => setIsAddingYt(false)}
-                  className="flex-1 h-12 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/50 bg-transparent cursor-pointer"
+                  className="w-full sm:flex-1 h-12 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/50 bg-transparent cursor-pointer order-2 sm:order-1"
                 >
                   Abort
                 </Button>
                 <Button
                   onClick={handleAddYoutube}
                   disabled={isSubmitingYt || !ytUrl.trim()}
-                  className="flex-1 h-12 rounded-2xl bg-loss text-white font-black uppercase text-[10px] tracking-widest shadow-lg shadow-loss/20 cursor-pointer"
+                  className="w-full sm:flex-1 h-12 rounded-2xl bg-loss text-white font-black uppercase text-[10px] tracking-widest shadow-lg shadow-loss/20 cursor-pointer order-1 sm:order-2"
                 >
                   {isSubmitingYt ? 'Logging...' : 'Sync Asset'}
                 </Button>
@@ -457,7 +457,7 @@ export default function GalleryPage() {
           </DialogContent>
         </Dialog>
         <Dialog open={isAddingFolder} onOpenChange={setIsAddingFolder}>
-          <DialogContent className="max-w-md rounded-[2.5rem] bg-card/90 backdrop-blur-2xl border-border/50 p-8 shadow-2xl">
+          <DialogContent className="w-[95%] sm:max-w-md rounded-[2.5rem] bg-card/90 backdrop-blur-2xl border-border/50 p-6 md:p-8 shadow-2xl outline-none">
             <DialogHeader className="mb-6">
               <DialogTitle className="text-2xl font-black uppercase tracking-tighter italic flex items-center gap-3">
                 <FolderPlus className="w-6 h-6 text-primary" />
@@ -475,18 +475,18 @@ export default function GalleryPage() {
                   className="h-14 rounded-2xl bg-accent/20 border-border/50 focus:border-primary transition-all font-bold text-sm px-6"
                 />
               </div>
-              <DialogFooter className="flex gap-3">
+              <DialogFooter className="flex flex-col sm:flex-row gap-3">
                 <Button
                   variant="outline"
                   onClick={() => setIsAddingFolder(false)}
-                  className="flex-1 h-12 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/50 bg-transparent cursor-pointer"
+                  className="w-full sm:flex-1 h-12 rounded-2xl font-black uppercase text-[10px] tracking-widest border-border/50 bg-transparent cursor-pointer order-2 sm:order-1"
                 >
                   Abort
                 </Button>
                 <Button
                   onClick={handleCreateFolder}
                   disabled={!newFolderName.trim()}
-                  className="flex-1 h-12 rounded-2xl bg-primary text-white font-black uppercase text-[10px] tracking-widest shadow-lg shadow-primary/20 cursor-pointer"
+                  className="w-full sm:flex-1 h-12 rounded-2xl bg-primary text-white font-black uppercase text-[10px] tracking-widest shadow-lg shadow-primary/20 cursor-pointer order-1 sm:order-2"
                 >
                   Initialize Sector
                 </Button>

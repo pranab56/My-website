@@ -77,9 +77,9 @@ const DayWithTooltip = memo(({
       <PopoverContent
         side="top"
         sideOffset={12}
-        className="p-0 bg-transparent border-none shadow-none z-[1002]"
+        className="p-0 bg-transparent border-none shadow-none z-[1002] w-[calc(100vw-40px)] sm:w-auto"
       >
-        <div className="p-6 bg-card border border-border shadow-2xl rounded-[1.5rem] min-w-[260px] backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="p-6 bg-card border border-border shadow-2xl rounded-[1.5rem] min-w-0 sm:min-w-[260px] w-full backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
           <div className="flex items-center justify-between mb-4 border-b border-border/50 pb-4">
             <div className="flex flex-col">
               <span className="font-black text-lg tracking-tighter">{format(day.date, "MMMM dd")}</span>
@@ -233,7 +233,7 @@ export function TradingCalendar() {
           <span className="md:hidden text-xs font-bold uppercase">Calendar</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 border-border bg-card shadow-2xl rounded-2xl overflow-hidden backdrop-blur-xl z-[1001]" align="end" sideOffset={8}>
+      <PopoverContent className="w-[calc(100vw-32px)] sm:w-auto p-0 border-border bg-card shadow-2xl rounded-2xl overflow-hidden backdrop-blur-xl z-[1001]" align="center" sideOffset={8}>
         <div className="p-4 border-b border-border bg-accent/10 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Zap className="w-4 h-4 text-primary animate-pulse" />

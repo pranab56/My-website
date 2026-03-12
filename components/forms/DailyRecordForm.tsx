@@ -119,7 +119,7 @@ export default function DailyRecordForm({ initialData, onSubmit, isLoading }: Da
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 rounded-xl border-2 shadow-2xl" align="start">
+            <PopoverContent className="w-screen sm:w-auto p-0 rounded-xl border-2 shadow-2xl z-[2000]" align="center">
               <Calendar
                 mode="single"
                 selected={selectedDateStr ? parseISO(selectedDateStr) : undefined}
